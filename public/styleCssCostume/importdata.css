@@ -1,0 +1,36 @@
+#uploadArea {
+    border: 3px dashed #d9dee3; /* Warna border dari Sneat */
+    border-radius: 0.5rem; /* border-radius dari Sneat */
+    padding: 2.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+#uploadArea:hover,
+#uploadArea.drag-over {
+    border-color: #696cff; /* Warna primary dari Sneat */
+    background-color: #f5f5f9; /* Warna latar hover dari Sneat */
+}
+#uploadArea .upload-icon {
+    font-size: 4rem;
+    color: #696cff; /* Warna primary dari Sneat */
+}
+
+/* Info file yang dipilih */
+#fileInfo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #f5f5f9;
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+#fileInfo .file-icon {
+    font-size: 1.75rem;
+    margin-right: 0.75rem;
+}
+
+.progress {
+    height: 1.5rem;
+    font-size: 0.875rem;
+}

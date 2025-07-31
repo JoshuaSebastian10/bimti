@@ -1,0 +1,9 @@
+.modal.fade.show {
+    transform: none !important;
+}
+
+.modal-dialog.modal-dialog-centered {
+    display: flex;
+    align-items: center;
+    min-height: calc(100% - 1rem);
+}
