@@ -1,4 +1,5 @@
 import './bootstrap';
+import 'laravel-livewire';
 
 import Alpine from 'alpinejs';
 
