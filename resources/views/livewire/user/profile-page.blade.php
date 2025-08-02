@@ -13,8 +13,7 @@
             <div class="row">
 
                 <div class="col-12 col-md-3 text-center">
-                    <img src="{{ $user->profil_path ? asset('storage/' . $user->profil_path) : asset('img/default_photo.png') }}"
-                         alt="user-avatar" class="d-block rounded-circle mb-3 mx-auto "  height="200" width="200" />
+                    <img src="{{ Auth::user()->profil_path ? asset(Auth::user()->profil_path) : asset('img/default_photo.png') }}"  alt="user-avatar" class="d-block rounded-circle mb-3 mx-auto "  height="200" width="200" />
                     
                    <div class="">
                     <button class="btn btn-dark btn-sm mb-2" wire:click="openPhotoModal">
@@ -126,7 +125,8 @@
                                 <img src="{{ $photo->temporaryUrl() }}" class="d-block rounded-circle mb-3 mx-auto" height="200" width="200" >
                             @else
                                 <p>Foto Saat Ini:</p>
-                                <img src="{{ $user->profil_path ? asset('storage/ptofi' . $user->profil_path) : asset('img/logo.png') }}" class="d-block rounded-circle mb-3 mx-auto" height="200" width="200" >
+                              <img src="{{ $user->profil_path ? asset($user->profil_path) : asset('img/logo.png') }}" class="d-block rounded-circle mb-3 mx-auto" height="200" width="200" >
+
 
                             @endif
 

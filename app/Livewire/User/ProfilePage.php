@@ -47,24 +47,33 @@ class ProfilePage extends Component
         ]);
     }
 
-     public function updatePhoto()
-    {
-        $this->validate([
-            'photo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
+public function updatePhoto()
+{
+    $this->validate([
+        'photo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+    ]);
 
-        // Hapus foto lama jika ada
-        if ($this->user->profil_path) {
-            Storage::disk('public')->delete($this->user->profil_path);
+    // Hapus foto lama jika ada
+    if ($this->user->profil_path) {
+        $oldPath = public_path($this->user->profil_path);
+        if (file_exists($oldPath)) {
+            unlink($oldPath);
         }
-
-        // Simpan foto baru dan update path di database
-        $path = $this->photo->store('profile-photos', 'public');
-        $this->user->update(['profil_path' => $path]);
-
-        $this->closePhotoModal();
-        session()->flash('success', 'Foto profil berhasil diperbarui.');
     }
+
+    // Buat nama file unik
+    $filename = uniqid() . '.' . $this->photo->getClientOriginalExtension();
+
+    // Simpan langsung ke public/profile-photos
+    $this->photo->storeAs('profile-photos', $filename, ['disk' => 'public_path']);
+
+    // Update path relatif (misal: profile-photos/xxx.jpg)
+    $this->user->update(['profil_path' => 'profile-photos/' . $filename]);
+
+    $this->closePhotoModal();
+    session()->flash('success', 'Foto profil berhasil diperbarui.');
+}
+    
 
     public function edit()
     {

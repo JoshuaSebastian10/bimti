@@ -23,7 +23,8 @@
                     href="javascript:void(0);"
                     data-bs-toggle="dropdown">
                     <div class="avatar avatar-online">
-                      <img src="{{ Auth::user()->profil_path ? asset('storage/' . Auth::user()->profil_path) : asset('img/default_photo.png') }}" class="w-px-40 h-40 w-40 rounded-circle" />
+                     <img src="{{ Auth::user()->profil_path ? asset(Auth::user()->profil_path) : asset('img/default_photo.png') }}" class="w-px-40 h-40 w-40 rounded-circle" />
+
                     </div>
                   </a>
                   <ul class="dropdown-menu dropdown-menu-end">
@@ -32,7 +33,8 @@
                         <div class="d-flex">
                           <div class="flex-shrink-0 me-3">
                             <div class="avatar avatar-online">
-                          <img src="{{ Auth::user()->profil_path ? asset('storage/' . Auth::user()->profil_path) : asset('img/default_photo.png') }}" class="w-px-40 h-40 w-40 rounded-circle" />
+                         <img src="{{ Auth::user()->profil_path ? asset(Auth::user()->profil_path) : asset('img/default_photo.png') }}" class="w-px-40 h-40 w-40 rounded-circle" />
+
                             </div>
                           </div>
                           <div class="flex-grow-1">
