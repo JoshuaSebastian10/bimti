@@ -21,10 +21,14 @@ return new class extends Migration
             $table->string('pesan')->nullable();
             $table->string('judul')->nullable();
             $table->string('lampiran_path')->nullable();
-            $table->date('tanggal_pengajuan');
+            $table->timestamp('tanggal_pengajuan')->nullable(); // Diubah menjadi timestamp
             $table->date('tanggal_bimbingan');
             $table->time('jam_mulai');
             $table->time('jam_selesai');
+            $table->timestamp('tanggal_disetujui')->nullable();
+            $table->timestamp('tanggal_ditolak')->nullable();
+            $table->timestamp('tanggal_dibatalkan')->nullable();
+            $table->timestamp('tanggal_selesai')->nullable();
             $table->timestamps();
             $table->foreign('dosen_id')->references('id')->on('dosens')->onDelete('cascade');
             $table->foreign('mahasiswa_id')->references('id')->on('mahasiswas')->onDelete('cascade');

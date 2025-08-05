@@ -21,7 +21,7 @@ use App\Http\Controllers\Mahasiswa\Bimbingan\BimbinganSayaController;
 use App\Http\Controllers\Dosen\Bimbingan\mahasiswaBimbinganController;
 use App\Http\Controllers\Mahasiswa\Bimbingan\BimbinganSkripsiController;
 use App\Http\Controllers\Dosen\jadwalBimbingan\jadwalBimbinganController;
-use App\Http\Controllers\Dosen\LaporanBimbinganController;
+use App\Http\Controllers\Laporan\LaporanBimbinganController;
 use App\Http\Controllers\Mahasiswa\Bimbingan\BimbinganAkademikController;
 use App\Http\Controllers\Mahasiswa\Bimbingan\BimbinganProposalController;
 use App\Http\Controllers\Mahasiswa\DashboardController as mahasiswaDashboard;
@@ -68,7 +68,7 @@ Route::prefix('dosen')->name('dosen.')->middleware('auth','role:dosen')->group(f
     Route::get('daftarBimbingan',[daftarBimbinganController::class, 'index'])->name('daftarBimbingan');
     Route::get('mahasiswaBimbingan',[mahasiswaBimbinganController::class, 'index'])->name('mahasiswaBimbingan');
     Route::get('mahasiswaBimbingan{mahasiswa}/detail',[mahasiswaBimbinganController::class, 'detail'])->name('mahasiswaBimbingan.detail');
-    Route::get('laporan-bimbingan/export', [LaporanBimbinganController::class, 'export'])->name('laporan.bimbingan.export');
+    // Route::get('laporan-bimbingan/export', [LaporanBimbinganController::class, 'export'])->name('laporan.bimbingan.export');
 
 });
 
@@ -89,6 +89,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('bimbingan/{bimbingan}/lampiran', [LampiranBimbinganController::class, 'show'])->name('bimbingan.lampiran.show');    
+
+    Route::get('laporan-bimbingan/export', [LaporanBimbinganController::class, 'export'])->name('laporan.bimbingan.export');
 });
 
 

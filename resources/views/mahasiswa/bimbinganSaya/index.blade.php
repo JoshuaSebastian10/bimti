@@ -2,7 +2,7 @@
 @section('title', 'Bimbingan Saya')
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('styleCssCostume/table.css') }}">
+<link rel="stylesheet" href="{{ asset('styleCssCostume/costume.css') }}">
 @endpush
 
 

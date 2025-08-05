@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Header UNIMA Sejajar</title>
+        <style>
+            body {
+                font-family: "Times New Roman", Times, serif;
+                margin: 0;
+                padding: 0;
+            }
+
+            /* Header sejajar */
+            .header {
+                display: flex;
+                align-items: center;
+                padding: 20px;
+            }
+
+            /* Logo kiri */
+            .header img {
+                width: 100px;
+                height: auto;
+                margin-right: 20px;
+            }
+
+            /* Teks kanan */
+            .header-text {
+                text-align: center;
+                flex: 1;
+            }
+
+            .header-text h2,
+            .header-text h3,
+            .header-text p {
+                margin: 5px 0;
+            }
+
+            .prodi {
+                font-weight: bold;
+                font-size: 1.2em;
+            }
+
+            /* Garis bawah */
+            .line {
+                border-top: 3px solid black;
+                border-bottom: 5px double black;
+                margin: 0 20px 10px 20px;
+            }
+
+            a.website-link {
+                color: blue;
+                text-decoration: underline;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <!-- Logo kiri -->
+            <img src="img/logo.png" alt="Logo UNIMA" />
+
+            <!-- Teks kanan -->
+            <div class="header-text">
+                <h2>
+                    KEMENTERIAN PENDIDIKAN TINGGI, SAINS,<br />DAN TEKNOLOGI
+                </h2>
+                <h2>UNIVERSITAS NEGERI MANADO</h2>
+                <h2>FAKULTAS TEKNIK</h2>
+                <h3 class="prodi">PROGRAM STUDI S1 TEKNIK INFORMATIKA</h3>
+                <p>
+                    Alamat : Kampus UNIMA Tondano 95618<br />
+                    website :
+                    <a
+                        class="website-link"
+                        href="https://ti.unima.ac.id"
+                        target="_blank"
+                        >https://ti.unima.ac.id</a
+                    >, email: teknikinformatika@unima.ac.id
+                </p>
+            </div>
+        </div>
+
+        <!-- Garis bawah -->
+        <div class="line"></div>
+    </body>
+</html>

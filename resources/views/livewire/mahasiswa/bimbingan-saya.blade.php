@@ -1,4 +1,5 @@
 <div>
+
         @if (session()->has('success'))
     <div class="alert alert-success alert-dismissible" role="alert">
         {{ session('success') }}
@@ -42,6 +43,7 @@
                     <select wire:model.live="filterJenis" class="form-select">
                         <option value="">Semua Jenis</option>
                         <option value="akademik">Akademik</option>
+                        <option value="proposal">Proposal</option>
                         <option value="skripsi">Skripsi</option>
                     </select>
                 </div>
@@ -164,8 +166,7 @@
                         <h5 class="modal-title">Cetak Laporan Bimbingan</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    {{-- Form ini akan menggunakan method GET --}}
-                    <form action="{{ route('dosen.laporan.bimbingan.export') }}" method="GET" target="_blank">
+                    <form action="{{ route('laporan.bimbingan.export') }}" method="GET" target="_blank">
                         <div class="modal-body">
                             <p>Silakan atur filter untuk laporan yang ingin Anda generate.</p>
                             
@@ -266,6 +267,92 @@
                                 </p>
                             </div>
                         </div>
+                        <hr>
+
+                        <h6>Riwayat Proses</h6>
+                        <ul class="timeline-v2">
+                            
+                            {{-- 1. Diajukan --}}
+                            @if($bimbinganTerpilih->tanggal_pengajuan)
+                            <li class="timeline-item">
+                                <div class="timeline-point timeline-point-primary">
+                                    <i class='bx bx-paper-plane'></i>
+                                </div>
+                                <div class="timeline-event">
+                                    <div class="d-flex justify-content-between">
+                                        <h6 class="mb-0">Diajukan</h6>
+                                        <small class="text-muted">{{ $bimbinganTerpilih->tanggal_pengajuan->format('d M Y, H:i')  }}</small>
+                                    </div>
+                                    <p class="mb-0">Permintaan bimbingan dikirim.</p>
+                                </div>
+                            </li>
+                            @endif
+
+                            {{-- 2. Disetujui --}}
+                            @if($bimbinganTerpilih->tanggal_disetujui)
+                            <li class="timeline-item">
+                                <div class="timeline-point timeline-point-success">
+                                    <i class='bx bx-check-double'></i>
+                                </div>
+                                <div class="timeline-event">
+                                    <div class="d-flex justify-content-between">
+                                        <h6 class="mb-0">Disetujui</h6>
+                                        <small class="text-muted">{{ $bimbinganTerpilih->tanggal_disetujui->format('d M Y, H:i') }}</small>
+                                    </div>
+                                    <p class="mb-0">Jadwal dikonfirmasi oleh dosen.</p>
+                                </div>
+                            </li>
+                            @endif
+
+                            {{-- 3. Ditolak --}}
+                            @if($bimbinganTerpilih->tanggal_ditolak)
+                            <li class="timeline-item">
+                                <div class="timeline-point timeline-point-danger">
+                                    <i class='bx bx-x-circle'></i>
+                                </div>
+                                <div class="timeline-event">
+                                    <div class="d-flex justify-content-between">
+                                        <h6 class="mb-0">Ditolak</h6>
+                                        <small class="text-muted">{{ $bimbinganTerpilih->tanggal_ditolak->format('d M Y, H:i') }}</small>
+                                    </div>
+                                    <p class="mb-0 text-danger fst-italic">Alasan: "{{ $bimbinganTerpilih->pesan }}"</p>
+                                </div>
+                            </li>
+                            @endif
+
+                            {{-- 4. Dibatalkan --}}
+                            @if($bimbinganTerpilih->tanggal_dibatalkan)
+                            <li class="timeline-item">
+                                <div class="timeline-point timeline-point-secondary">
+                                    <i class='bx bx-block'></i>
+                                </div>
+                                <div class="timeline-event">
+                                    <div class="d-flex justify-content-between">
+                                        <h6 class="mb-0">Dibatalkan</h6>
+                                        <small class="text-muted">{{ $bimbinganTerpilih->tanggal_dibatalkan->format('d M Y, H:i') }}</small>
+                                    </div>
+                                    <p class="mb-0">Jadwal bimbingan telah dibatalkan.</p>
+                                </div>
+                            </li>
+                            @endif
+
+                            {{-- 5. Selesai --}}
+                            @if($bimbinganTerpilih->tanggal_selesai)
+                            <li class="timeline-item">
+                                <div class="timeline-point timeline-point-info">
+                                    <i class='bx bx-badge-check'></i>
+                                </div>
+                                <div class="timeline-event">
+                                    <div class="d-flex justify-content-between">
+                                        <h6 class="mb-0">Selesai</h6>
+                                        <small class="text-muted">{{ $bimbinganTerpilih->tanggal_selesai->format('d M Y, H:i') }}</small>
+                                    </div>
+                                    <p class="mb-0">Sesi bimbingan telah selesai dilaksanakan.</p>
+                                </div>
+                            </li>
+                            @endif
+                        </ul>
+                        {{-- ... --}}
                         <hr>
                        
                         <div>

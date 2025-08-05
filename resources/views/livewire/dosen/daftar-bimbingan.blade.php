@@ -157,7 +157,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     {{-- Form ini akan menggunakan method GET --}}
-                    <form action="{{ route('dosen.laporan.bimbingan.export') }}" method="GET" target="_blank">
+                    <form action="{{ route('laporan.bimbingan.export') }}" method="GET" target="_blank">
                         <div class="modal-body">
                             <p>Silakan atur filter untuk laporan yang ingin Anda generate.</p>
                             

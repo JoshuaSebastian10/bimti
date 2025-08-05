@@ -1,9 +1,95 @@
-.modal.fade.show {
-    transform: none !important;
+/* Styling untuk Timeline v2 */
+.timeline-v2 {
+    list-style: none;
+    padding: 0;
+    position: relative;
+    margin-left: 10px; /* Memberi ruang untuk garis */
 }
 
-.modal-dialog.modal-dialog-centered {
+/* Garis vertikal utama */
+.timeline-v2::before {
+    content: "";
+    position: absolute;
+    top: 5px;
+    bottom: 5px;
+    left: 20px;
+    width: 2px;
+    background: #e9ecef;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 25px;
+    padding-left: 50px;
+    opacity: 0; /* Awalnya transparan untuk animasi */
+    animation: slideInFade 0.5s ease-out forwards;
+}
+
+/* Delay animasi untuk setiap item agar muncul berurutan */
+.timeline-item:nth-child(1) {
+    animation-delay: 0.1s;
+}
+.timeline-item:nth-child(2) {
+    animation-delay: 0.3s;
+}
+.timeline-item:nth-child(3) {
+    animation-delay: 0.5s;
+}
+.timeline-item:nth-child(4) {
+    animation-delay: 0.7s;
+}
+.timeline-item:nth-child(5) {
+    animation-delay: 0.9s;
+}
+
+.timeline-point {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
-    min-height: calc(100% - 1rem);
+    justify-content: center;
+    color: #fff;
+    border: 3px solid #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.timeline-point i {
+    font-size: 1.5rem;
+}
+
+/* Warna titik timeline sesuai status */
+.timeline-point-primary {
+    background-color: #696cff;
+} /* Diajukan */
+.timeline-point-success {
+    background-color: #71dd37;
+} /* Disetujui */
+.timeline-point-danger {
+    background-color: #ff3e1d;
+} /* Ditolak */
+.timeline-point-secondary {
+    background-color: #8592a3;
+} /* Dibatalkan */
+.timeline-point-info {
+    background-color: #03c3ec;
+} /* Selesai */
+
+.timeline-event {
+    position: relative;
+    top: 5px;
+}
+
+/* Animasi Keyframes */
+@keyframes slideInFade {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }

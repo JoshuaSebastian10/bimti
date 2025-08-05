@@ -67,35 +67,69 @@ class DaftarBimbingan extends Component
      
     public function simpanPerubahanStatus()
     {
+        // 1. Validasi (Sudah Benar)
         $this->validate([
             'status_baru' => 'required|in:disetujui,ditolak,selesai,dibatalkan',
             'pesan_penolakan' => 'required_if:status_baru,ditolak|string|nullable',
         ]);
 
-
+        // 2. Otorisasi (Sudah Benar)
         if (!$this->bimbinganTerpilih || $this->bimbinganTerpilih->dosen_id !== Auth::user()->dosen->id) {
             abort(403);
         }
 
+        // =======================================================
+        //            AWAL DARI PERBAIKAN LOGIKA
+        // =======================================================
 
-        $this->bimbinganTerpilih->status = $this->status_baru;
-        if ($this->status_baru === 'ditolak') {
-            $this->bimbinganTerpilih->pesan = $this->pesan_penolakan;
+        // 3. Update Status dan Timestamp
+        $bimbingan = $this->bimbinganTerpilih;
+        $bimbingan->status = $this->status_baru;
+
+        // Reset semua timestamp status untuk memastikan hanya satu yang terisi
+        $bimbingan->tanggal_disetujui = null;
+        $bimbingan->tanggal_ditolak = null;
+        $bimbingan->tanggal_dibatalkan = null;
+        $bimbingan->tanggal_selesai = null;
+
+        // Isi timestamp yang sesuai dengan status baru
+        switch ($this->status_baru) {
+        case 'disetujui':
+            $bimbingan->tanggal_disetujui = now();
+            break;
+        case 'ditolak':
+            $bimbingan->tanggal_ditolak = now();
+            $bimbingan->pesan = $this->pesan_penolakan;
+            break;
+        case 'dibatalkan':
+            $bimbingan->tanggal_dibatalkan = now();
+            $bimbingan->pesan = 'Dibatalkan oleh dosen.';
+            break;
+        case 'selesai':
+            // JIKA BELUM ADA TANGGAL PERSETUJUAN, ISI SEKARANG JUGA
+            if (is_null($bimbingan->tanggal_disetujui)) {
+                $bimbingan->tanggal_disetujui = now();
+            }
+            $bimbingan->tanggal_selesai = now();
+            break;
+    }
+
+        $bimbingan->save();
+        
+        // =======================================================
+        //             AKHIR DARI PERBAIKAN LOGIKA
+        // =======================================================
+
+        // 4. Beri Umpan Balik
+        // Logika pesan Anda sudah bagus, ini hanya versi yang sedikit lebih ringkas
+        if ($this->status_baru === 'disetujui') {
+            session()->flash('success', 'Status bimbingan berhasil disetujui.');
         } else {
-            $this->bimbinganTerpilih->pesan = null; 
-        }
-
-        $this->bimbinganTerpilih->save();
-     
-        if($this->bimbinganTerpilih->status == 'disetujui'){
-             session()->flash('success', 'Status bimbingan berhasil diperbarui.');
-        }else{
- session()->flash('success', 'Status bimbingan berhasil diperbarui dan dipindahkan ke halaman riwayat bimbingan .');
+            session()->flash('success', 'Status bimbingan berhasil diperbarui dan dipindahkan ke riwayat.');
         }
         
-       
-           $this->closeModalStatus();
-        }
+        $this->closeModalStatus();
+    }
         
 
     public function render()

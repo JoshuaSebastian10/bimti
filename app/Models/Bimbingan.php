@@ -80,4 +80,13 @@ class Bimbingan extends Model
         return $this->jam_selesai ? \Carbon\Carbon::parse($this->jam_selesai)->format('H:i') : '-';
     }
 
+       protected $casts = [
+        'tanggal_pengajuan' => 'datetime',
+        // TAMBAHKAN SEMUA TIMESTAMP STATUS DI SINI
+        'tanggal_disetujui' => 'datetime',
+        'tanggal_ditolak' => 'datetime',
+        'tanggal_dibatalkan' => 'datetime',
+        'tanggal_selesai' => 'datetime',
+    ];
+
 }

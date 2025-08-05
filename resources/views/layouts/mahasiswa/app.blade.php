@@ -30,6 +30,7 @@
       rel="stylesheet" />
 
     <link rel="stylesheet" href="{{ asset('template/assets/vendor/fonts/iconify-icons.css') }}" />
+    @stack('styles')
 
     <!-- Core CSS -->
     <!-- build:css assets/vendor/css/theme.css  -->
