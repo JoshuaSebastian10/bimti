@@ -3,7 +3,7 @@
         <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
           <div class="app-brand demo">
             <a href="{{ route('mahasiswa.dashboard') }}" class="app-brand-link">
-              <span class="app-brand-text demo menu-text fw-bold ms-2">Bimbingan</span>
+              <span class="app-brand-text demo menu-text fw-bold ms-2">BIMTI</span>
             </a>
 
             <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
@@ -37,7 +37,8 @@
               </a>
             </li>
 
-              <li class="menu-item {{ request()->routeIs('mahasiswa.bimbinganAkademik*') || request()->routeIs('mahasiswa.bimbinganSkripsi.create*') ? 'open' : '' }}">
+              <li class="menu-item {{ request()->routeIs('mahasiswa.bimbinganAkademik*') || request()->routeIs('mahasiswa.bimbinganSkripsi.create*')  || request()->routeIs('mahasiswa.bimbinganProposal.create*') ? 'open' : '' }}">
+
               <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons bx bx-book-content"></i>
                 <div class="text-truncate" data-i18n="Layouts">Buat Bimbingan</div>
@@ -49,7 +50,7 @@
                     <div class="text-truncate">Akademik</div>
                   </a>
                 </li>
-                <li class="menu-item {{ request()->routeIs('mahasiswa.bimbinganAkademik*') || request()->routeIs('mahasiswa.bimbinganProposal.create*') ? 'open' : '' }}">
+                <li class="menu-item {{  request()->routeIs('mahasiswa.bimbinganProposal.create*') ? 'active' : '' }}">
                   <a href="{{ route('mahasiswa.bimbinganProposal.create') }}" class="menu-link">
                     <div class="text-truncate">Proposal</div>
                   </a>

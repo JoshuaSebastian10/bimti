@@ -18,7 +18,6 @@
                     <h4 class="mb-1">{{ $mahasiswa->user->name }}</h4>
                     <p class="text-muted mb-1">{{ $mahasiswa->nim }}</p>
                     <p class="text-muted mb-2">Angkatan: {{ $mahasiswa->angkatan ?? 'N/A' }}</p>
-                    <span class="badge bg-label-primary">{{ ucfirst($mahasiswa->status_bimbingan) }}</span>
                 </div>
             </div>
             

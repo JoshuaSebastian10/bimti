@@ -1,31 +1,18 @@
-/*
-* File: public/assets/css/custom.css
-* Aturan ini akan berlaku untuk layar dengan lebar maksimal 768px (ukuran tablet dan di bawahnya)
-*/
-
-@media (max-width: 768px) {
-    /* Kita buat class helper baru bernama .table-responsive-sm-text */
-    .table-responsive-sm-text td,
-    .table-responsive-sm-text th {
-        font-size: 0.8rem; /* Ukuran font 80% dari ukuran normal */
-        padding: 0.5rem 0.6rem; /* Kurangi padding (jarak tepi) sel agar lebih rapat */
+@media (max-width: 576px) {
+    .table-responsive.table-small-mobile table,
+    .table-responsive.table-small-mobile table th,
+    .table-responsive.table-small-mobile table td,
+    .table-responsive.table-small-mobile .badge,
+    .table-responsive.table-small-mobile .dropdown-item,
+    .table-responsive.table-small-mobile .btn {
+        font-size: 0.7rem !important;
     }
 
-    /* Kecilkan juga ukuran font dan padding pada badge di dalam tabel */
-    .table-responsive-sm-text .badge {
-        font-size: 0.7rem;
-        padding: 0.25em 0.5em;
+    .table-responsive.table-small-mobile table td strong {
+        font-size: 0.75rem !important;
     }
 
-    /* Kecilkan juga ukuran ikon action di dalam tabel */
-    .table-responsive-sm-text .bx {
-        font-size: 1rem;
-    }
-
-    .btn-costume-responsive {
-        padding: 0.25rem 0.5rem;
-        font-size: 0.875rem;
-        line-height: 1.5;
-        border-radius: 0.2rem;
+    .table-responsive.table-small-mobile .btn i {
+        font-size: 1rem !important;
     }
 }

@@ -8,7 +8,6 @@
             <h5 class="card-title mb-0">Formulir Ajuan Bimbingan Skripsi</h5>
         </div>
         <div class="card-body">
-            {{-- Panggil Komponen Livewire dan kirim data dosen awal --}}
             @livewire('mahasiswa.ajukan-bimbingan-skripsi')
         </div>
     </div>

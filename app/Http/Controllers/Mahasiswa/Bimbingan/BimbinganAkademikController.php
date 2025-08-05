@@ -7,9 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 class BimbinganAkademikController extends Controller
 {
-    /**
 
-     */
     public function index()
     {
        
@@ -17,6 +15,6 @@ class BimbinganAkademikController extends Controller
             return redirect()->route('mahasiswa.dashboard')->with('error', 'Dosen Pembimbing Akademik Anda belum diatur oleh admin.');
         }
 
-        return view('mahasiswa.bimbinganakademik.index');
+        return view('mahasiswa.bimbinganAkademik.index');
     }
 }

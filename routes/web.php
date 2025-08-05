@@ -21,6 +21,7 @@ use App\Http\Controllers\Mahasiswa\Bimbingan\BimbinganSayaController;
 use App\Http\Controllers\Dosen\Bimbingan\mahasiswaBimbinganController;
 use App\Http\Controllers\Mahasiswa\Bimbingan\BimbinganSkripsiController;
 use App\Http\Controllers\Dosen\jadwalBimbingan\jadwalBimbinganController;
+use App\Http\Controllers\Dosen\LaporanBimbinganController;
 use App\Http\Controllers\Mahasiswa\Bimbingan\BimbinganAkademikController;
 use App\Http\Controllers\Mahasiswa\Bimbingan\BimbinganProposalController;
 use App\Http\Controllers\Mahasiswa\DashboardController as mahasiswaDashboard;
@@ -55,8 +56,8 @@ Route::prefix('admin')->name('admin.')->middleware('auth','role:admin')->group(f
     Route::get('dataAdmin{admin}/edit',[DataAdminController::class, 'edit'])->name('dataAdmin.edit');
     Route::put('dataAdmin{admin}',[DataAdminController::class, 'update'])->name('dataAdmin.update');
 
-     Route::get('jadwalDosen',[JadwalDosenController::class, 'index'])->name('jadwalDosen');
-     Route::get('manajemenBimbingan',[ManajemenBimbinganController::class, 'index'])->name('manajemenBimbingan');
+    Route::get('jadwalDosen',[JadwalDosenController::class, 'index'])->name('jadwalDosen');
+    Route::get('manajemenBimbingan',[ManajemenBimbinganController::class, 'index'])->name('manajemenBimbingan');
 
     
 });
@@ -67,6 +68,7 @@ Route::prefix('dosen')->name('dosen.')->middleware('auth','role:dosen')->group(f
     Route::get('daftarBimbingan',[daftarBimbinganController::class, 'index'])->name('daftarBimbingan');
     Route::get('mahasiswaBimbingan',[mahasiswaBimbinganController::class, 'index'])->name('mahasiswaBimbingan');
     Route::get('mahasiswaBimbingan{mahasiswa}/detail',[mahasiswaBimbinganController::class, 'detail'])->name('mahasiswaBimbingan.detail');
+    Route::get('laporan-bimbingan/export', [LaporanBimbinganController::class, 'export'])->name('laporan.bimbingan.export');
 
 });
 
@@ -89,7 +91,6 @@ Route::middleware('auth')->group(function () {
     Route::get('bimbingan/{bimbingan}/lampiran', [LampiranBimbinganController::class, 'show'])->name('bimbingan.lampiran.show');    
 });
 
-Route::get('/mails', [MailController::class, 'sendMail'])->name('mails.send');
 
 // Route "pintar" untuk /dashboard
 Route::get('/dashboard', function () {

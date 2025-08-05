@@ -34,8 +34,8 @@
      
         <div class="mb-3">
             <label for="topik" class="form-label">Topik Bimbingan<span class="text-danger">*</span></label>
-            <textarea wire:model="topik" class="form-control @error('topik') is-invalid @enderror" id="topik" rows="3"></textarea>
-            @error('topik') <div class="invalid-feedback">{{ $message }}</div> @enderror
+            <textarea wire:model="topik" class="form-control @error('topik') is-invalid @enderror" id="topik" rows="3" placeholder="Contoh: Diskusi Rencana Studi Semester Depan"></textarea>
+            @error('topik') <div class="invalid-feedback" {{ $message }}</div> @enderror
         </div>
         
        

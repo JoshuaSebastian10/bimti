@@ -2,13 +2,14 @@
 
 namespace App\Livewire\Mahasiswa;
 
+use App\Models\Dosen;
 use Livewire\Component;
 use App\Models\Bimbingan;
 use Livewire\WithPagination;
+use Livewire\WithFileUploads; 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Log;
-use Livewire\WithFileUploads; 
 
 class BimbinganSaya extends Component
 {
@@ -18,7 +19,10 @@ class BimbinganSaya extends Component
     protected $paginationTheme = 'bootstrap';
 
     public string $search = '';
-    public string $tab_aktif = 'aktif';
+    public string $filterStatus = '';
+    public string $filterJenis = '';
+    public string $filterDosen = '';
+    public $dosens = []; 
 
     public $bimbinganTerpilih;
     public bool $isDetailModalOpen = false;
@@ -32,6 +36,36 @@ class BimbinganSaya extends Component
 
     
     protected $queryString = ['search' => ['except' => '']];
+
+    public function render()
+    {
+    $mahasiswaId = Auth::user()->mahasiswa->id;
+    
+    $bimbinganQuery = Bimbingan::where('mahasiswa_id', $mahasiswaId)
+    ->with('dosen.user')
+    ->when($this->search, function($query){
+        $query->Where('topik', 'like', '%' . $this->search.'%')
+            ->orWhereHas('dosen.user', fn($q) => $q->where('name', 'like', '%'.$this->search.'%'));
+    })
+    ->when($this->filterStatus, fn($query, $status) => $query->where('status', $status))
+    ->when($this->filterJenis, fn($query, $jenis) => $query->where('jenis_bimbingan', $jenis))
+    ->when($this->filterDosen, fn($query, $dosenId) => $query->where('dosen_id', $dosenId));
+    
+    $bimbingans = $bimbinganQuery->latest('tanggal_pengajuan')->paginate(10);
+    
+    return view('livewire.mahasiswa.bimbingan-saya', [
+        'bimbingans' => $bimbingans,
+    ]);
+    }
+
+    
+    public function mount()
+    {
+
+        $this->dosens = Dosen::with('user')->get();
+    }
+
+
 
     public function updatingSearch()
     {
@@ -136,35 +170,6 @@ class BimbinganSaya extends Component
         }
     }
 
-        public function render()
-    {
-        $mahasiswaId = Auth::user()->mahasiswa->id;
-
-        $bimbinganQuery = Bimbingan::where('mahasiswa_id', $mahasiswaId)
-        ->with('dosen.user');
-
-        if ($this->tab_aktif === 'aktif') {
-            $bimbinganQuery->whereIn('status', ['menunggu', 'disetujui']);
-        } else { 
-            $bimbinganQuery->whereIn('status', ['selesai', 'ditolak', 'dibatalkan']);
-        }
-
-        if (!empty($this->search)) {
-            $bimbinganQuery->where(function($query) {
-                $query->Where('topik', 'like', '%' . $this->search . '%')
-                        ->orWhereHas('dosen.user', function($subQuery) {
-                        $subQuery->where('name', 'like', '%' . $this->search . '%');
-                      });
-            });
-        }
-
-        $bimbingans = $bimbinganQuery->latest('created_at')->paginate(10);
-
-
-        return view('livewire.Mahasiswa.bimbingan-saya', [
-            'bimbingans' => $bimbingans,
-        ]);
-    }
 
      public function bukaModalStatus($bimbinganId)
      {

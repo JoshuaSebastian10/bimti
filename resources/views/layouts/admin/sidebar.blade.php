@@ -1,10 +1,10 @@
         <!-- Menu -->
 
-        <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
-            <div class="app-brand demo">
+        <aside id="layout-menu" class="layout-menu menu-vertical   menu bg-menu-theme">
+            <div class="app-brand demo ">
               <a href="{{ route('admin.dashboard') }}" class="app-brand-link">
                 
-                <span class="app-brand-text demo menu-text fw-bold ms-2">Bimbingan</span>
+                <span class="app-brand-text demo menu-text fw-bold ms-2">BIMTI</span>
               </a>
   
               <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
@@ -12,13 +12,10 @@
               </a>
             </div>
   
-            <div class="menu-divider mt-0"></div>
-  
-            <div class="menu-inner-shadow"></div>
-  
+
             <ul class="menu-inner py-1">
               <!-- Dashboards -->
-              <li class="menu-item open {{ request()->routeIs('admin.dashboard*') ? 'active' : '' }}">
+              <li class="menu-item  open {{ request()->routeIs('admin.dashboard*') ? 'active' : '' }}">
                 <a href="{{ route('admin.dashboard') }}" class="menu-link ">
                   <i class="menu-icon tf-icons bx bx-home-smile"></i>
                   <div class="text-truncate" data-i18n="Dashboards">Dashboards</div>
@@ -26,14 +23,14 @@
               </li>
 
               <li class="menu-header small text-uppercase">
-                <span class="menu-header-text">Bimbingan</span>
+                <span class="menu-header-text">Manajemen Bimbingan</span>
               </li>
               <li class="menu-item {{ request()->routeIs('admin.manajemenBimbingan*') ? 'active' : '' }}">
                 <a
                   href="{{ route('admin.manajemenBimbingan') }}"
                   class="menu-link">
                   <i class="menu-icon tf-icons bx bxs-data"></i>
-                  <div class="text-truncate" data-i18n="Email">Manajemen Bimbingan</div>
+                  <div class="text-truncate" data-i18n="Email">Daftar Bimbingan</div>
                 </a>
               </li>
 
@@ -42,7 +39,7 @@
                   href="{{ route('admin.jadwalDosen') }}"
                   class="menu-link">
                   <i class="menu-icon tf-icons bx bxs-time"></i>
-                  <div class="text-truncate" data-i18n="Email">Manajemen Jadwal Dosen</div>
+                  <div class="text-truncate">Jadwal Dosen</div>
                 </a>
               </li>
 
@@ -57,7 +54,7 @@
   
               <!-- Apps & Pages -->
               <li class="menu-header small text-uppercase">
-                <span class="menu-header-text">User</span>
+                <span class="menu-header-text">Manajemen User</span>
               </li>
 
               <li class="menu-item {{ request()->routeIs('admin.dataMahasiswa.index*') ? 'active' : '' }}">
@@ -72,13 +69,22 @@
               
               
               <!-- Components -->
-              <li class="menu-header small text-uppercase"><span class="menu-header-text">Import Data Mahasiswa</span></li>
+              <li class="menu-header small text-uppercase"><span class="menu-header-text">Import Data</span></li>
               <li class="menu-item {{ request()->routeIs('admin.mahasiswa.import.create*') ? 'active' : '' }}">
                 <a
                   href="{{route('admin.mahasiswa.import.create')}}"
                   class="menu-link">
                   <i class="menu-icon tf-icons bx bx-import"></i>
-                  <div class="text-truncate" data-i18n="Email">Import Data Mahasiswa</div>
+                  <div class="text-truncate" data-i18n="Email">Mahasiswa</div>
+                </a>
+              </li>
+
+              <li class="menu-item {{ request()->routeIs('admin.mahasiswa.import.create*') ? 'active' : '' }}">
+                <a
+                  href="{{route('admin.mahasiswa.import.create')}}"
+                  class="menu-link">
+                  <i class="menu-icon tf-icons bx bx-import"></i>
+                  <div class="text-truncate" data-i18n="Email"><span>Pembimbing Skripsi</span></div>
                 </a>
               </li>
 

@@ -8,6 +8,6 @@ class ManajemenBimbinganController extends Controller
 {
 public function index()
 {
-    return view('admin.manajemenbimbingan.index');
+    return view('admin.manajemenBimbingan.index');
 }
 }
