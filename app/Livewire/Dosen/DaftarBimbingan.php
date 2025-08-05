@@ -120,7 +120,7 @@ class DaftarBimbingan extends Component
         $bimbingans = $bimbinganQuery->latest('tanggal_bimbingan')->paginate(10);
 
 
-        return view('livewire.Dosen.daftar-bimbingan', [
+        return view('livewire.dosen.daftar-bimbingan', [
             'bimbingans' => $bimbingans,
         ]);
     }
