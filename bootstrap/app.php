@@ -15,7 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'guest.redirect' => \App\Http\Middleware\RedirectIfAuthenticatedCustom::class,
             'role' => Spatie\Permission\Middleware\RoleMiddleware::class,
             'status-akun' => \App\Http\Middleware\cekStatusAkun::class,
-            'status-bimbingan-skripsi' => \App\Http\Middleware\CekStatusBimbinganSkripsi::class,
+            'status-bimbingan-skripsi' => \App\Http\Middleware\cekStatusBimbinganSkripsi::class,
             'status-bimbingan-proposal' => \App\Http\Middleware\cekStatusBimbinganProposal::class,
         ]);
     })
