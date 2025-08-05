@@ -52,11 +52,11 @@ class Bimbingan extends Model
     protected $fillable = ['mahasiswa_id','dosen_id', 'topik','judul', 'status' ,'jenis_bimbingan','pesan','lampiran_path','tanggal_pengajuan' ,'tanggal_bimbingan','jam_mulai','jam_selesai'];
 
     public function mahasiswa(){
-        return $this->belongsTo(mahasiswa::class);
+        return $this->belongsTo(Mahasiswa::class);
     }
 
     public function dosen(){
-        return $this->belongsTo(dosen::class);
+        return $this->belongsTo(Dosen::class);
     }
 
     public function getTanggalPengajuanFormatAttribute()
