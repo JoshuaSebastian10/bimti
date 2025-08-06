@@ -53,6 +53,8 @@ class AjukanBimbinganAkademik extends Component
 
     $mahasiswa = Auth::user()->mahasiswa;
     $dosenId = $this->dosenPa->id;
+
+
  
     $jadwalRutin = Jadwal_bimbingan::where('jadwal_dosen_id', $dosenId)
         ->where('hari', Carbon::parse($tanggalBimbingan)->locale('id')->translatedFormat('l'))

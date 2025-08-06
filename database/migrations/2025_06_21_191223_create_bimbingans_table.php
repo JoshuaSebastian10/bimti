@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('mahasiswa_id');
             $table->unsignedBigInteger('dosen_id');
             $table->string('topik')->nullable();
-            $table->enum('status',['menunggu','disetujui','ditolak', 'selesai','dibatalkan']);
+            $table->enum('status',['menunggu','disetujui','ditolak', 'selesai','dibatalkan', 'kadaluarsa']);
             $table->enum('jenis_bimbingan',['akademik','proposal','skripsi']);
             $table->string('pesan')->nullable();
             $table->string('judul')->nullable();

@@ -52,7 +52,19 @@ class AjukanBimbinganProposal extends Component
 
     $mahasiswa = Auth::user()->mahasiswa;
     $dosenId = $this->pembimbing_skripsi_1_id->id;
- 
+
+    
+    $ajuanAktif = Bimbingan::where('mahasiswa_id', $mahasiswa->id)
+        ->where('dosen_id', $dosenId)
+        ->where('jenis_bimbingan', 'proposal')
+        ->whereIn('status', ['menunggu', 'disetujui'])
+        ->exists();
+
+        if ($ajuanAktif) {
+            session()->flash('error', 'Anda sudah memiliki ajuan bimbingan proposal yang aktif dengan dosen ini. Mohon tunggu hingga ajuan sebelumnya selesai diproses.');
+            return;
+        }
+
     $jadwalRutin = Jadwal_bimbingan::where('jadwal_dosen_id', $dosenId)
         ->where('hari', Carbon::parse($tanggalBimbingan)->locale('id')->translatedFormat('l'))
         ->where('jam_mulai', $jamMulai)
@@ -91,7 +103,7 @@ class AjukanBimbinganProposal extends Component
             'status'            => 'menunggu',
             'jenis_bimbingan'   => 'proposal',
             'pesan'             => null,
-           'lampiran_path'     => $lampiranPath, 
+            'lampiran_path'     => $lampiranPath, 
             'tanggal_pengajuan' => now(),
             'tanggal_bimbingan' => $tanggalBimbingan,
             'jam_mulai'         => $jamMulai,
@@ -105,13 +117,14 @@ class AjukanBimbinganProposal extends Component
         
         if ($lampiranPath) {
             Storage::disk('local')->delete($lampiranPath);
-            }
+        }
 
-        Log::error('Gagal membuat ajuan bimbingan: ' . $e->getMessage());
+        Log::error('Gagal membuat ajuan bimbingan proposal: ' . $e->getMessage());
          session()->flash('error', 'Terjadi kesalahan teknis saat mengajukan bimbingan.');
          return;
     }
-       redirect()->route('mahasiswa.bimbinganSaya')->with('success', 'Jadwal bimbingan berhasil diajukan. Mohon tunggu konfirmasi dari dosen.');
+        session()->flash('success', 'Jadwal bimbingan berhasil diajukan. Mohon tunggu konfirmasi dari dosen.');
+        return $this->redirect(route('mahasiswa.bimbinganSaya'));
     }
 
     private function generateJadwalOptions($profilDosenId)
