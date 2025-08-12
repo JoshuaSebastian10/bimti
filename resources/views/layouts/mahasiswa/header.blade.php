@@ -17,6 +17,8 @@
               <ul class="navbar-nav flex-row align-items-center ms-md-auto">
                 <!-- Place this tag where you want the button to render. -->
     
+                         @livewire('notifikasi.mahasiswa-notifikasi')
+
 
                 <!-- User -->
                 <li class="nav-item navbar-dropdown dropdown-user dropdown">
@@ -52,6 +54,10 @@
                         <i class="icon-base bx bx-user icon-md me-3"></i><span>My Profile</span>
                       </a>
                     </li>
+
+
+
+
                     
                 
                     <li>

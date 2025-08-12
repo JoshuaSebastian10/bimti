@@ -1,5 +1,3 @@
-
-
 <!doctype html>
 <html
   lang="en"
@@ -13,112 +11,112 @@
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
     <title>@yield('title') | {{ config('app.name', 'Laravel') }}</title>
-
     <meta name="description" content="" />
+    <meta name="csrf-token" content="{{ csrf_token() }}"><!-- penting untuk /broadcasting/auth -->
 
     <!-- Favicon -->
-    <!-- SweetAlert2 -->
+    <link rel="icon" type="image/x-icon" href="{{ asset('img/logoInformatika.png') }}" />
+
+    <!-- SweetAlert2 (opsional) -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-     <link rel="icon" type="image/x-icon" href="{{ asset('img/logoInformatika.png') }}" />
-
     <!-- Fonts -->
-    <link rel="preconnect" href=" https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap"
       rel="stylesheet" />
 
     <link rel="stylesheet" href="{{ asset('template/assets/vendor/fonts/iconify-icons.css') }}" />
     @stack('styles')
 
-    <!-- Core CSS -->
-    <!-- build:css assets/vendor/css/theme.css  -->
-
+    <!-- Core CSS Sneat -->
     <link rel="stylesheet" href="{{ asset('template/assets/vendor/css/core.css') }}" />
     <link rel="stylesheet" href="{{ asset('template/assets/css/demo.css') }}" />
 
     <!-- Vendors CSS -->
-
     <link rel="stylesheet" href="{{ asset('template/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
-
-    <!-- endbuild -->
-
     <link rel="stylesheet" href="{{ asset('template/assets/vendor/libs/apex-charts/apex-charts.css') }}" />
 
-    <!-- Page CSS -->
-
-    <!-- Helpers -->
+    <!-- Helpers & Config -->
     <script src="{{ asset('template/assets/vendor/js/helpers.js') }}"></script>
-    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
-
-    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
-
     <script src="{{ asset('template/assets/js/config.js') }}"></script>
+
+    {{-- Vite: load app.js (di dalamnya import ./bootstrap yang inisialisasi Echo/Pusher) --}}
+    @vite(['resources/js/app.js'])
+
+    {{-- Livewire styles (jika pakai Livewire) --}}
+    @livewireStyles
   </head>
 
   <body>
     <!-- Layout wrapper -->
     <div class="layout-wrapper layout-content-navbar">
       <div class="layout-container">
-        <!-- Menu -->
+        <!-- Sidebar -->
         @include('layouts.mahasiswa.sidebar')
-        <!-- / Menu -->
+        <!-- /Sidebar -->
 
         <!-- Layout container -->
         <div class="layout-page">
-            {{-- Layout Header --}}
-            
-            @include('layouts.mahasiswa.header')
-            {{-- /Layout Header --}}
+          {{-- Header --}}
+          @include('layouts.mahasiswa.header')
+          {{-- /Header --}}
+
           <!-- Content wrapper -->
           <div class="content-wrapper">
             <!-- Content -->
             @yield('content')
-            <!-- / Content -->
-
-            <!-- Footer -->
-            {{-- @include('layouts.mahasiswa.footer') --}}
-            <!-- / Footer -->
+            <!-- /Content -->
 
             <div class="content-backdrop fade"></div>
           </div>
-          <!-- Content wrapper -->
+          <!-- /Content wrapper -->
         </div>
-        <!-- / Layout page -->
+        <!-- /Layout page -->
       </div>
 
-      <!-- Overlay -->
+      <!-- Overlay (opsional) -->
       {{-- <div class="layout-overlay layout-menu-toggle"></div> --}}
     </div>
-    <!-- / Layout wrapper -->
+    <!-- /Layout wrapper -->
 
-    <!-- Core JS -->
-
+    <!-- Core JS Sneat -->
     <script src="{{ asset('template/assets/vendor/libs/jquery/jquery.js') }}"></script>
-
     <script src="{{ asset('template/assets/vendor/libs/popper/popper.js') }}"></script>
     <script src="{{ asset('template/assets/vendor/js/bootstrap.js') }}"></script>
-
     <script src="{{ asset('template/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
-
     <script src="{{ asset('template/assets/vendor/js/menu.js') }}"></script>
-
-    <!-- endbuild -->
 
     <!-- Vendors JS -->
     <script src="{{ asset('template/assets/vendor/libs/apex-charts/apexcharts.js') }}"></script>
 
-    <!-- Main JS -->
-
+    <!-- Main JS Sneat -->
     <script src="{{ asset('template/assets/js/main.js') }}"></script>
-
-    <!-- Page JS -->
     <script src="{{ asset('template/assets/js/dashboards-analytics.js') }}"></script>
 
-    <!-- Place this tag before closing body tag for github widget button. -->
+    <!-- Github buttons (opsional) -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
-    
-    
+
+    {{-- Livewire scripts --}}
+    @livewireScripts
+
+    {{-- === Realtime subscribe ke private channel user (Pusher/Echo) === --}}
+    @auth
+
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+  const kanal = @json(optional(auth()->user()->mahasiswa)->id ? ('mahasiswa.' . auth()->user()->mahasiswa->id) : null);
+  if (!kanal || !window.Echo) return;
+
+  if (!window.__notifMahasiswaSub) {
+    window.__notifMahasiswaSub = window.Echo.private(kanal)
+      .listen('.perubahan-diminta',  () => Livewire.dispatch('notifMasuk'))
+      .listen('.perubahan-otomatis', () => Livewire.dispatch('notifMasuk'));
+  }
+});
+</script>
+
+    @endauth
   </body>
 </html>

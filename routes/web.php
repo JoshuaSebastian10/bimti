@@ -1,8 +1,11 @@
 <?php
 
+use App\Models\User;
+use App\Models\Bimbingan;
 use Maatwebsite\Excel\Row;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Notifications\DemoNotification;
 use App\Http\Controllers\MailController;
 use App\Livewire\Mahasiswa\BimbinganSaya;
 use App\Http\Controllers\ProfileController;
@@ -10,6 +13,7 @@ use App\Http\Controllers\Admin\JadwalDosenController;
 use App\Http\Controllers\Imports\DataMahasiswaImport;
 use App\Http\Controllers\LampiranBimbinganController;
 use App\Http\Controllers\Admin\ManajemenBimbinganController;
+use App\Http\Controllers\Laporan\LaporanBimbinganController;
 use App\Http\Controllers\Admin\DataUsers\DataAdminController;
 use App\Http\Controllers\Admin\DataUsers\DataDosenController;
 use App\Http\Controllers\Admin\DataUsers\DataMahasiswaController;
@@ -21,7 +25,6 @@ use App\Http\Controllers\Mahasiswa\Bimbingan\BimbinganSayaController;
 use App\Http\Controllers\Dosen\Bimbingan\mahasiswaBimbinganController;
 use App\Http\Controllers\Mahasiswa\Bimbingan\BimbinganSkripsiController;
 use App\Http\Controllers\Dosen\jadwalBimbingan\jadwalBimbinganController;
-use App\Http\Controllers\Laporan\LaporanBimbinganController;
 use App\Http\Controllers\Mahasiswa\Bimbingan\BimbinganAkademikController;
 use App\Http\Controllers\Mahasiswa\Bimbingan\BimbinganProposalController;
 use App\Http\Controllers\Mahasiswa\DashboardController as mahasiswaDashboard;
@@ -93,7 +96,16 @@ Route::middleware('auth')->group(function () {
     Route::get('laporan-bimbingan/export', [LaporanBimbinganController::class, 'export'])->name('laporan.bimbingan.export');
 });
 
-
+Route::get('/tes-pusher', function () {
+    $p = new \Pusher\Pusher(
+        env('PUSHER_APP_KEY'),
+        env('PUSHER_APP_SECRET'),
+        env('PUSHER_APP_ID'),
+        ['cluster' => env('PUSHER_APP_CLUSTER', 'ap1'), 'useTLS' => true]
+    );
+    $p->trigger('tes-channel', 'tes-event', ['pesan' => 'halo dari server']);
+    return 'ok';
+});
 // Route "pintar" untuk /dashboard
 Route::get('/dashboard', function () {
     $user = Auth::user();

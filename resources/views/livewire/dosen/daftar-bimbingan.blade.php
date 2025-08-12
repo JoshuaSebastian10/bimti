@@ -14,50 +14,97 @@
         </div>
     @endif
 
-     {{-- BARIS UNTUK TOMBOL TAB --}}
-     <ul class="nav nav-pills flex-column flex-md-row mb-3">
-        <li class="nav-item mx-3">
-            {{-- Tambahkan class 'active' secara dinamis berdasarkan properti $tab_aktif --}}
-            <a class="btn btn-costume-responsive  {{ $tab_aktif === 'aktif' ? 'btn-primary' : 'btn-outline-primary' }}" href="#" wire:click.prevent="$set('tab_aktif', 'aktif')">
-                <i class="bx bx-bell me-1"></i> Bimbingan Aktif
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="btn btn-costume-responsive {{ $tab_aktif === 'riwayat' ? 'btn-primary' : 'btn-outline-primary' }}" href="#" wire:click.prevent="$set('tab_aktif', 'riwayat')">
-                <i class="bx bx-history me-1"></i> Riwayat Bimbingan
-            </a>
-        </li>
-    </ul>
+
+            <div class="card">
+        <h5 class="card-header">Pencarian & Filter</h5>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <input wire:model.live.debounce.300ms="search" type="text" class="form-control" placeholder="Cari Topik, Mahasiswa...">
+                </div>
+
+                <div class="col-md-2">
+                    <select wire:model.live="filterStatus" class="form-select">
+                        <option value="">Semua Status</option>
+                        <option value="menunggu">Menunggu</option>
+                        <option value="disetujui">Disetujui</option>
+                        <option value="selesai">Selesai</option>
+                        <option value="ditolak">Ditolak</option>
+                        <option value="dibatalkan">Dibatalkan</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select wire:model.live="filterJenis" class="form-select">
+                        <option value="">Semua Jenis</option>
+                        <option value="akademik">Akademik</option>
+                        <option value="proposal">Proposal</option>
+                        <option value="skripsi">Skripsi</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
     
     <div class="card">
+        <div class="row">
+
+        @php $hasSelection = isset($selected) && count($selected) > 0; @endphp
+
         <div class="row align-items-center">
-            <div class="col-md-6">
-                <h5 class="card-header">Daftar Ajuan Bimbingan</h5>
-            </div>
-            <div class="col-md-6">
-                <div class="d-flex justify-content-end p-3 align-items-center gap-3">
-                    {{-- Search Bar --}}
-                    <div class="input-group input-group-merge" style="max-width: 300px;">
-                        <span class="input-group-text"><i class="bx bx-search"></i></span>
-                        <input wire:model.live.debounce.300ms="search" type="text" class="form-control" placeholder="Cari Nama Mahasiswa, Topik...">
-                    </div>
-                    
-                    {{-- Tombol Cetak Rekap --}}
-                    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalExportLaporan">
-                        <i class="bx bx-printer me-1"></i> Cetak Rekap
-                    </button>
-                </div>
-            </div>
-
-
-            
+        <div class="col-12 col-sm-6">
+            <h5 class="card-header mb-0">Daftar Ajuan Bimbingan</h5>
         </div>
 
-        <div class="table-responsive text-nowrap">
+        <div class="col-12 col-sm-6 text-start text-sm-end py-3 pe-4">
+            <div class="d-inline-flex gap-2">
+            {{-- Print tetap di kanan --}}
+            <button type="button" class="btn btn-outline-secondary"
+                    data-bs-toggle="modal" data-bs-target="#modalExportLaporan">
+                <i class="bx bx-printer me-1"></i> Cetak Rekap
+            </button>
+
+            {{-- Toggle Bulk: ganti label sesuai state --}}
+            <button type="button" class="btn btn-outline-primary"
+                    wire:click="toggleBulkMode">
+                @if($bulkMode ?? false)
+                Batalkan pilihan
+                @else
+                Pilih bimbingan mahasiswa
+                @endif
+            </button>
+
+            {{-- Muncul HANYA kalau ada yang terseleksi --}}
+            @if(($bulkMode ?? false) && $hasSelection)
+                <button type="button" class="btn btn-primary"
+                        wire:click="openUbahModal">
+                <i class="bx bx-calendar-edit me-1"></i> Ubah Jadwal yang Dipilih
+                </button>
+            @endif
+            </div>
+        </div>
+        </div>
+
+
+        <div class="table-responsive text-nowrap {{ ($bulkMode ?? false) ? 'bulk-mode' : '' }}">
+            @if($bulkMode ?? false)
+            <div class="alert alert-info py-2 px-3 mb-2">
+                Mode pilih jadwal aktif — menampilkan hanya <strong>Menunggu</strong> & <strong>Disetujui</strong>.
+            </div>
+            @endif
+
             <table class="table table-hover table-responsive-sm-text">
                 <thead>
                     <tr>
+                    @if($bulkMode ?? false)
+                            <th class="text-center" style="width:40px;">
+                            <input type="checkbox" class="form-check-input"
+                                    wire:model.live="selectPage"
+                                    wire:change="toggleSelectPage">
+                            </th>
+                        @endif
                         <th>No</th>
                         <th>Jenis Bimbingan</th>
                         <th>Nama</th>
@@ -71,8 +118,17 @@
                 </thead>
                 <tbody class="table-border-bottom-0">
                
-                    @forelse($bimbingans as $index => $value)
-                        <tr>
+                                        @forelse($bimbingans as $index => $value)
+                                         
+                        <tr wire:key="bimb-{{ $value->id }}" class="{{ (isset($selected) && in_array($value->id, $selected)) ? 'table-active' : '' }} {{ ($bulkMode ?? false) ? 'row-selectable' : '' }}">
+                            {{-- NEW: checkbox per baris saat bulk mode --}}
+                            @if($bulkMode ?? false)
+                            <td class="text-center">
+                                <input type="checkbox" class="form-check-input"
+                                    value="{{ $value->id }}"
+                                    wire:model.live="selected">
+                            </td>
+                            @endif
                             <td class="text-4">{{ $bimbingans->firstItem() + $index }}</td>
                             <td>
                             
@@ -137,8 +193,8 @@
                             </td>
                         </tr>
                     @empty
-                        <tr>
-                            <td colspan="8" class="text-center py-4">Tidak ada data ajuan bimbingan.</td>
+                    <tr>
+                            <td colspan="{{ ($bulkMode ?? false) ? 10 : 9 }}" class="text-center py-4">Tidak ada data ajuan bimbingan.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -348,6 +404,62 @@
     </div>
     <div class="modal-backdrop fade show"></div>
 @endif
+
+          @if(($showUbahModal ?? false) && isset($selected))
+  <div class="modal fade show" style="display:block;" tabindex="-1" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" wire:key="ubah-modal">
+        <div class="modal-header">
+          <h5 class="modal-title">Ubah Jadwal ({{ count($selected) }} dipilih)</h5>
+          <button type="button" class="btn-close" wire:click="$set('showUbahModal', false)"></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Tanggal Baru</label>
+            <input type="date" class="form-control" wire:model.live="tanggalBaru">
+            @error('tanggalBaru') <div class="text-danger small">{{ $message }}</div> @enderror
+          </div>
+
+          <div class="row g-2">
+            <div class="col">
+              <label class="form-label">Jam Mulai</label>
+              <input type="time" class="form-control" wire:model.live="jamMulaiBaru">
+              @error('jamMulaiBaru') <div class="text-danger small">{{ $message }}</div> @enderror
+            </div>
+            <div class="col">
+              <label class="form-label">Jam Selesai</label>
+              <input type="time" class="form-control" wire:model.live="jamSelesaiBaru">
+              @error('jamSelesaiBaru') <div class="text-danger small">{{ $message }}</div> @enderror
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <label class="form-label">Alasan (wajib)</label>
+            <textarea class="form-control" rows="2" wire:model.live="alasan"
+              placeholder="Contoh: Bentrok rapat senat, mohon dimajukan sehari."></textarea>
+            @error('alasan') <div class="text-danger small">{{ $message }}</div> @enderror
+          </div>
+
+          <div class="alert alert-warning mt-3">
+            Perubahan bersifat <strong>all-or-nothing</strong> &amp; tidak boleh <strong>&lt; 24 jam</strong> dari jadwal lama.
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn btn-label-secondary" wire:click="$set('showUbahModal', false)">Batal</button>
+          <button class="btn btn-primary" wire:click="submitBatch" wire:loading.attr="disabled">
+            <span wire:loading.remove>Konfirmasi Ubah</span>
+            <span wire:loading>Memproses…</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop fade show"></div>
+@endif
+
+
 </div>
 
 
