@@ -49,4 +49,6 @@ class Jadwal_bimbingan extends Model
         return Carbon::createFromFormat('H:i:s', $this->jam_selesai)->format('H:i');
     }
 
+    
+
 }

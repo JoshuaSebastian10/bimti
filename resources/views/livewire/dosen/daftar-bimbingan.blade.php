@@ -1,6 +1,7 @@
 
+
 <div>
-    {{-- Area untuk menampilkan notifikasi sukses/error --}}
+     {{-- Area untuk menampilkan notifikasi sukses/error --}}
     @if (session()->has('success'))
         <div class="alert alert-success alert-dismissible" role="alert">
             {{ session('success') }}
@@ -14,141 +15,219 @@
         </div>
     @endif
 
-     {{-- BARIS UNTUK TOMBOL TAB --}}
-     <ul class="nav nav-pills flex-column flex-md-row mb-3">
-        <li class="nav-item mx-3">
-            {{-- Tambahkan class 'active' secara dinamis berdasarkan properti $tab_aktif --}}
-            <a class="btn btn-costume-responsive  {{ $tab_aktif === 'aktif' ? 'btn-primary' : 'btn-outline-primary' }}" href="#" wire:click.prevent="$set('tab_aktif', 'aktif')">
-                <i class="bx bx-bell me-1"></i> Bimbingan Aktif
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="btn btn-costume-responsive {{ $tab_aktif === 'riwayat' ? 'btn-primary' : 'btn-outline-primary' }}" href="#" wire:click.prevent="$set('tab_aktif', 'riwayat')">
-                <i class="bx bx-history me-1"></i> Riwayat Bimbingan
-            </a>
-        </li>
-    </ul>
+          <div class="card">
+        <h5 class="card-header">Pencarian & Filter</h5>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <input wire:model.live.debounce.300ms="search" type="text" class="form-control" placeholder="Cari Topik, Mahasiswa...">
+                </div>
 
-    
+                <div class="col-md-2">
+                    <select wire:model.live="filterStatus" class="form-select">
+                        <option value="">Semua Status</option>
+                        <option value="menunggu">Menunggu</option>
+                        <option value="disetujui">Disetujui</option>
+                        <option value="selesai">Selesai</option>
+                        <option value="ditolak">Ditolak</option>
+                        <option value="dibatalkan">Dibatalkan</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select wire:model.live="filterJenis" class="form-select">
+                        <option value="">Semua Jenis</option>
+                        <option value="akademik">Akademik</option>
+                        <option value="proposal">Proposal</option>
+                        <option value="skripsi">Skripsi</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <div class="card">
         <div class="row align-items-center">
             <div class="col-md-6">
                 <h5 class="card-header">Daftar Ajuan Bimbingan</h5>
             </div>
+
+        
             <div class="col-md-6">
                 <div class="d-flex justify-content-end p-3 align-items-center gap-3">
                     {{-- Search Bar --}}
-                    <div class="input-group input-group-merge" style="max-width: 300px;">
-                        <span class="input-group-text"><i class="bx bx-search"></i></span>
-                        <input wire:model.live.debounce.300ms="search" type="text" class="form-control" placeholder="Cari Nama Mahasiswa, Topik...">
-                    </div>
-                    
+                  <button type="button"
+                            class="btn {{ $bulkMode ? 'btn-warning' : 'btn-outline-primary' }} btn-costume-responsive"
+                            wire:click="toggleBulkMode">
+                        @if($bulkMode)
+                            <i class="bx bx-check-square me-1"></i> Batalkan ({{ count($selected) }})
+                        @else
+                            <i class="bx bx-select-multiple me-1"></i> Pilih Bimbingan
+                        @endif
+                    </button>
                     {{-- Tombol Cetak Rekap --}}
                     <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#modalExportLaporan">
                         <i class="bx bx-printer me-1"></i> Cetak Rekap
                     </button>
                 </div>
             </div>
-
-
-            
         </div>
 
-        <div class="table-responsive text-nowrap">
-            <table class="table table-hover table-responsive-sm-text">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Jenis Bimbingan</th>
-                        <th>Nama</th>
-                        <th>NIM</th>
-                        <th>Topik</th>
-                        <th>Tanggal Diajukan</th>
-                        <th>Jadwal Bimbingan</th>
-                        <th>Status</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="table-border-bottom-0">
-               
-                    @forelse($bimbingans as $index => $value)
-                        <tr>
-                            <td class="text-4">{{ $bimbingans->firstItem() + $index }}</td>
-                            <td>
-                            
-                                @if($value->jenis_bimbingan == 'akademik')
-                                    <span class="badge bg-label-secondary">Akademik</span>
-                                @elseif($value->jenis_bimbingan == 'proposal')
-                                    <span class="badge bg-label-info">Proposal</span>
-                                @else
-                                    <span class="badge bg-label-primary">Skripsi</span>   
-                                @endif
-                            </td>
-                            <td>{{ optional($value->mahasiswa->user)->name }}</td>
-                            <td>{{ $value->mahasiswa->nim }}</td>
-                            <td>{{ Str::limit($value->topik, 30) }}</td>
-                            <td>{{ $value->TanggalPengajuanFormat }}</td>
-                            <td>
-                                {{ $value->TanggalBimbinganFormat }}
-                                <br>
-                                <small class="text-muted">{{ $value->JamMulaiFormat }} - {{ $value->JamSelesaiFormat }}</small>
-                            </td>
-                            <td>
-                             
-                                @php
-                                    $statusClass = [
-                                        'menunggu' => 'bg-label-warning',
-                                        'disetujui' => 'bg-label-success',
-                                        'ditolak' => 'bg-label-danger',
-                                        'selesai' => 'bg-label-info',
-                                    ][$value->status] ?? 'bg-label-dark';
-                                @endphp
-                                <span class="badge {{ $statusClass }}">{{ ucfirst($value->status) }}</span>
-                            </td>
-                            <td>
-                                <div class="dropdown">
-                                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                                        <i class="bx bx-dots-vertical-rounded"></i>
-                                    </button>
-                                    <div class="dropdown-menu">
+        {{-- =================== BULK TOOLBAR =================== --}}
+        @if (count($selected) > 0)
+            <div class="border-top border-bottom bg-light px-3 py-2 d-flex justify-content-between align-items-center">
+                <div class="small">
+                    <strong>{{ count($selected) }}</strong> bimbingan dipilih
+                </div>
+                <div class="d-flex gap-2">
+                  <button type="button"
+                            class="btn btn-sm btn-primary"
+                            wire:click="bukaModalUbahJadwal"
+                            @disabled(count($selected) === 0)>
+                    <i class="bx bx-calendar-edit me-1"></i> Ubah Jadwal (bulk)
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" wire:click="clearSelection">
+                        <i class="bx bx-x me-1"></i> Batalkan Pilihan
+                    </button>
+                </div>
+            </div>
+        @endif
+        {{-- ===================================================== --}}
 
-                                        <button type="button" class="dropdown-item" 
-                                                wire:click="lihatDetail({{ $value->id }})">
-                                                <i class="bx bx-show me-1"></i> Lihat Detail
-                                        </button>
-                                                                                    
-                                    @if ($value->status == 'menunggu' || $value->status == 'disetujui' )
-                                        
-                                        <button type="button" class="dropdown-item" 
-                                                wire:click="bukaModalStatus({{ $value->id }})">
+        <div class="table-responsive text-nowrap">
+    @php
+        $idsPage = $bimbingans->pluck('id')->map(fn($i)=>(string)$i)->toArray();
+        $allOnPageSelected = !array_diff($idsPage, $selected ?? []);
+    @endphp
+
+    <table class="table table-hover table-responsive-sm-text">
+        <thead>
+            <tr>
+                @if($bulkMode)
+                    <th style="width:44px;">
+                        <div class="form-check m-0">
+                            <input class="form-check-input" type="checkbox"
+                                   wire:click="{{ $allOnPageSelected
+                                        ? 'unselectPageIds('.e(json_encode($idsPage)).')'
+                                        : 'selectPageIds('.e(json_encode($idsPage)).')' }}"
+                                   @checked($allOnPageSelected)
+                                   aria-label="Pilih semua di halaman ini">
+                        </div>
+                    </th>
+                @endif
+                <th>No</th>
+                <th>Jenis Bimbingan</th>
+                <th>Nama</th>
+                <th>NIM</th>
+                <th>Topik</th>
+                <th>Tanggal Diajukan</th>
+                <th>Jadwal Bimbingan</th>
+                <th>Status</th>
+                @unless($bulkMode)
+                    <th>Aksi</th>
+                @endunless
+            </tr>
+        </thead>
+
+        <tbody class="table-border-bottom-0">
+            @forelse($bimbingans as $index => $value)
+                @php $isSelected = in_array((string)$value->id, $selected ?? []); @endphp
+                <tr class="{{ $bulkMode && $isSelected ? 'table-active' : '' }}" wire:key="row-{{ $value->id }}">
+                    @if($bulkMode)
+                        <td>
+                            <div class="form-check m-0">
+                                <input class="form-check-input" type="checkbox" value="{{ $value->id }}"
+                                       wire:model.live="selected" aria-label="Pilih bimbingan {{ $value->id }}">
+                            </div>
+                        </td>
+                    @endif
+
+                    <td class="text-4">{{ $bimbingans->firstItem() + $index }}</td>
+                    <td>
+                        @if($value->jenis_bimbingan == 'akademik')
+                            <span class="badge bg-label-secondary">Akademik</span>
+                        @elseif($value->jenis_bimbingan == 'proposal')
+                            <span class="badge bg-label-info">Proposal</span>
+                        @else
+                            <span class="badge bg-label-primary">Skripsi</span>
+                        @endif
+                    </td>
+                    <td>{{ optional($value->mahasiswa->user)->name }}</td>
+                    <td>{{ $value->mahasiswa->nim }}</td>
+                    <td>{{ Str::limit($value->topik, 30) }}</td>
+                    <td>{{ $value->TanggalPengajuanFormat }}</td>
+                    <td>
+                        {{ $value->TanggalBimbinganFormat }}<br>
+                        <small class="text-muted">{{ $value->JamMulaiFormat }} - {{ $value->JamSelesaiFormat }}</small>
+                    </td>
+                    <td>
+                        @php
+                            $statusClass = [
+                                'menunggu' => 'bg-label-warning',
+                                'disetujui' => 'bg-label-success',
+                                'ditolak' => 'bg-label-danger',
+                                'selesai' => 'bg-label-info',
+                                'dibatalkan' => 'bg-label-secondary',
+                            ][$value->status] ?? 'bg-label-dark';
+                        @endphp
+                        <span class="badge {{ $statusClass }}">{{ ucfirst($value->status) }}</span>
+                    </td>
+
+                    @unless($bulkMode)
+                        <td>
+                            <div class="dropdown">
+                                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                    <i class="bx bx-dots-vertical-rounded"></i>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <button type="button" class="dropdown-item" wire:click="lihatDetail({{ $value->id }})">
+                                        <i class="bx bx-show me-1"></i> Lihat Detail
+                                    </button>
+                                    @if ($value->status == 'menunggu' || $value->status == 'disetujui')
+                                        <button type="button" class="dropdown-item" wire:click="bukaModalStatus({{ $value->id }})">
                                             <i class="bx bx-edit-alt me-1"></i> Ubah Status
                                         </button>
-
-                                
-                                        <button type="button" class="dropdown-item" 
+                                        <button type="button" class="dropdown-item"
                                                 wire:click="deleteBimbingan({{ $value->id }})"
                                                 wire:confirm="Anda yakin ingin menghapus ajuan bimbingan ini?">
                                             <i class="bx bx-trash me-1"></i> Hapus
                                         </button>
                                     @endif
-
-                                    </div>
                                 </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="8" class="text-center py-4">Tidak ada data ajuan bimbingan.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-        <div class="card-body">
-            {{ $bimbingans->links() }}
-        </div>
+                            </div>
+                        </td>
+                    @endunless
+                </tr>
+            @empty
+                <tr>
+                    {{-- jumlah kolom konsisten: 9 kolom (dengan/ tanpa bulk tetap 9) --}}
+                    <td colspan="9" class="text-center py-4">Tidak ada data ajuan bimbingan.</td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
 
-                {{-- Modal Cetak --}}
+<div class="card-body">
+    {{-- tombol bantu cepat + pagination (di LUAR tbody) --}}
+    <div class="d-flex justify-content-between align-items-center">
+        @if($bulkMode)
+            <div class="small text-muted">
+                @if($allOnPageSelected)
+                    <a href="#" wire:click.prevent='unselectPageIds(@js($idsPage))'>Batalkan pilihan halaman ini</a>
+                @else
+                    <a href="#" wire:click.prevent='selectPageIds(@js($idsPage))'>Pilih semua di halaman ini</a>
+                @endif
+            </div>
+        @else
+            <div></div>
+        @endif
+        <div>{{ $bimbingans->links() }}</div>
+    </div>
+</div>
+
+
+                  {{-- Modal Cetak --}}
         <div class="modal fade" id="modalExportLaporan" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
@@ -203,7 +282,7 @@
                 </div>
             </div>
         </div>
-    </div>
+   
     
     @if($isDetailModalOpen && $bimbinganTerpilih)
         <div class="modal fade show" style="display: block;" tabindex="-1">
@@ -348,6 +427,56 @@
     </div>
     <div class="modal-backdrop fade show"></div>
 @endif
-</div>
 
+
+{{-- Modal Ubah Jadwal (BULK) –– PASTIKAN DI DALAM ROOT --}}
+    @if($isModalJadwalOpen)
+        <div class="modal fade show" style="display:block;" tabindex="-1" role="dialog" aria-modal="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <form wire:submit.prevent="simpanUbahJadwal">
+                <div class="modal-header">
+                  <h5 class="modal-title">Ubah Jadwal Bimbingan (Bulk)</h5>
+                  <button type="button" class="btn-close" wire:click="tutupModalUbahJadwal"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <label class="form-label">Tanggal Baru</label>
+                    <input type="date" class="form-control @error('tanggal_baru') is-invalid @enderror"
+                          wire:model.live="tanggal_baru">
+                    @error('tanggal_baru') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label">Jam Mulai</label>
+                      <input type="time" class="form-control @error('jam_mulai_baru') is-invalid @enderror"
+                            wire:model.live="jam_mulai_baru" step="60">
+                      @error('jam_mulai_baru') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label">Jam Selesai</label>
+                      <input type="time" class="form-control @error('jam_selesai_baru') is-invalid @enderror"
+                            wire:model.live="jam_selesai_baru" step="60">
+                      @error('jam_selesai_baru') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Keterangan (opsional)</label>
+                    <textarea class="form-control @error('keterangan_baru') is-invalid @enderror" rows="3"
+                              wire:model.live="keterangan_baru"
+                              placeholder="Contoh: dipindah karena rapat jurusan."></textarea>
+                    @error('keterangan_baru') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-label-secondary" wire:click="tutupModalUbahJadwal">Batal</button>
+                  <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="modal-backdrop fade show"></div>
+    @endif
+</div> {{-- <-- ini penutup root Livewire. Pastikan hanya SATU --}}
 
