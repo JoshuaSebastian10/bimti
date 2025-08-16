@@ -43,17 +43,13 @@ class BimbinganSaya extends Component
     
     $bimbinganQuery = Bimbingan::where('mahasiswa_id', $mahasiswaId)
     ->with('dosen.user')
-    ->when($this->search, function ($query) {
-        $search = $this->search;
-        $query->where(function ($q) use ($search) {
-            $q->where('topik', 'like', "%{$search}%")
-              ->orWhereHas('dosen.user', fn ($u) => $u->where('name', 'like', "%{$search}%"));
-        });
+    ->when($this->search, function($query){
+        $query->Where('topik', 'like', '%' . $this->search.'%')
+            ->orWhereHas('dosen.user', fn($q) => $q->where('name', 'like', '%'.$this->search.'%'));
     })
-    ->when($this->filterStatus, fn ($query, $status) => $query->where('status', $status))
-    ->when($this->filterJenis, fn ($query, $jenis) => $query->where('jenis_bimbingan', $jenis))
-    ->when($this->filterDosen, fn ($query, $dosenId) => $query->where('dosen_id', $dosenId));
-
+    ->when($this->filterStatus, fn($query, $status) => $query->where('status', $status))
+    ->when($this->filterJenis, fn($query, $jenis) => $query->where('jenis_bimbingan', $jenis))
+    ->when($this->filterDosen, fn($query, $dosenId) => $query->where('dosen_id', $dosenId));
     
     $bimbingans = $bimbinganQuery->latest('tanggal_pengajuan')->paginate(10);
     
@@ -63,15 +59,10 @@ class BimbinganSaya extends Component
     }
 
     
-     public function mount()
+    public function mount()
     {
-        // Ambil HANYA dosen yang pernah membimbing mahasiswa ini untuk opsi filter
-        $this->dosens = Auth::user()->mahasiswa->bimbingan()
-            ->with('dosen.user')
-            ->get()
-            ->pluck('dosen')
-            ->unique('id')
-            ->sortBy('user.name');
+
+        $this->dosens = Dosen::with('user')->get();
     }
 
 
@@ -80,10 +71,6 @@ class BimbinganSaya extends Component
     {
         $this->resetPage();
     }
-
-    public function updatingFilterStatus() { $this->resetPage(); }
-    public function updatingFilterJenis()  { $this->resetPage(); }
-    public function updatingFilterDosen()  { $this->resetPage(); }
     
      public function editBimbingan($bimbinganId)
     {
@@ -147,12 +134,10 @@ class BimbinganSaya extends Component
         $bimbingan = Bimbingan::with(['dosen.user', 'mahasiswa.user'])->find($bimbinganId);
         
 
-          if ($bimbingan && $bimbingan->mahasiswa_id === Auth::user()->mahasiswa->id) {
-        $this->bimbinganTerpilih = $bimbingan;
-        $this->isDetailModalOpen = true;
-    } else {
-        session()->flash('error', 'Data tidak ditemukan atau bukan milik Anda.');
-    }
+        if ($bimbingan && $bimbingan->mahasiswa_id === Auth::user()->mahasiswa->id) {
+            $this->bimbinganTerpilih = $bimbingan;
+            $this->isDetailModalOpen = true;
+        }
     }
 
      public function closeDetailModal()

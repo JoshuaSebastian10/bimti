@@ -49,15 +49,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Bimbingan extends Model
 {
-//     protected $fillable = [
-//   'mahasiswa_id','dosen_id','topik','status','jenis_bimbingan','pesan',
-//   'tanggal_pengajuan','tanggal_bimbingan','jam_mulai','jam_selesai',
-//   'tanggal_disetujui','tanggal_ditolak','tanggal_dibatalkan','tanggal_selesai',
-//   // kolom usulan:
-//   'usulan_tanggal_bimbingan','usulan_jam_mulai','usulan_jam_selesai',
-//   'status_perubahan','waktu_perubahan_diajukan',
-// ];
-    protected $fillable = ['mahasiswa_id','dosen_id', 'topik','judul', 'status' ,'jenis_bimbingan','pesan','lampiran_path','tanggal_pengajuan' ,'tanggal_bimbingan','jam_mulai','jam_selesai','tanggal_disetujui','tanggal_ditolak','tanggal_dibatalkan','tanggal_selesai','usulan_tanggal_bimbingan','usulan_jam_mulai','usulan_jam_selesai','status_perubahan','waktu_perubahan_diajukan',];
+    protected $fillable = ['mahasiswa_id','dosen_id', 'topik','judul', 'status' ,'jenis_bimbingan','pesan','lampiran_path','tanggal_pengajuan' ,'tanggal_bimbingan','jam_mulai','jam_selesai'];
 
     public function mahasiswa(){
         return $this->belongsTo(Mahasiswa::class);
@@ -89,12 +81,12 @@ class Bimbingan extends Model
     }
 
        protected $casts = [
-        'tanggal_pengajuan'      => 'datetime',
-        'tanggal_disetujui'      => 'datetime',
-        'tanggal_ditolak'        => 'datetime',
-        'tanggal_dibatalkan'     => 'datetime',
-        'tanggal_selesai'        => 'datetime',
-        'reschedule_expires_at'  => 'datetime',
+        'tanggal_pengajuan' => 'datetime',
+        // TAMBAHKAN SEMUA TIMESTAMP STATUS DI SINI
+        'tanggal_disetujui' => 'datetime',
+        'tanggal_ditolak' => 'datetime',
+        'tanggal_dibatalkan' => 'datetime',
+        'tanggal_selesai' => 'datetime',
     ];
 
 }

@@ -29,11 +29,6 @@ return new class extends Migration
             $table->timestamp('tanggal_ditolak')->nullable();
             $table->timestamp('tanggal_dibatalkan')->nullable();
             $table->timestamp('tanggal_selesai')->nullable();
-            $table->date('usulan_tanggal_bimbingan')->nullable();
-            $table->time('usulan_jam_mulai')->nullable();
-            $table->time('usulan_jam_selesai')->nullable();
-            $table->enum('status_perubahan', ['menunggu_mahasiswa', 'disetujui_mahasiswa', 'ditolak_mahasiswa'])->nullable();
-            $table->timestamp('waktu_perubahan_diajukan')->nullable();
             $table->timestamps();
             $table->foreign('dosen_id')->references('id')->on('dosens')->onDelete('cascade');
             $table->foreign('mahasiswa_id')->references('id')->on('mahasiswas')->onDelete('cascade');

@@ -80,7 +80,6 @@
                 </thead>
                 <tbody class="table-border-bottom-0">
                     @forelse($bimbingans as $index => $value)
-                     <tr wire:key="bimbingan-{{ $value->id }}">
                         <tr>
                             <td class="text-4">{{ $bimbingans->firstItem() + $index }}</td>
                             <td>
@@ -117,7 +116,7 @@
                                         <i class="bx bx-dots-vertical-rounded"></i>
                                     </button>
 
-                                    <div class="dropdown-menu" wire:key="dd-{{ $value->id }}">
+                                    <div class="dropdown-menu">
                                         {{-- @if($value->lampiran_path)
                                             <a class="dropdown-item" href="{{ route('bimbingan.lampiran.show', $value->id) }}" target="_blank">
                                                 <i class="bx bx-paperclip me-1"></i> Lihat Lampiran
