@@ -9,4 +9,5 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 // 2. Tambahkan kode penjadwalan Anda di sini
-Schedule::command('bimbingan:expire-pending')->daily();
+// Schedule::command('bimbingan:expire-pending')->daily();
+Schedule::command('bimbingan:expire-pending')->everyMinute();
